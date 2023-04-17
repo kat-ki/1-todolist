@@ -4,9 +4,11 @@ import { FilterValuesType } from "./App";
 type TodoListPropsType = {
     title: string
     tasks: TaskType[]
+    filter: FilterValuesType
     removeTask: (taskId: string) => void
     changeFilter: (nextFilter: FilterValuesType) => void
     addTask: (title: string) => void
+    changeTaskStatus: (taskId: string, newIsDoneValue: boolean) => void
 }
 export type TaskType = {
     id: string
@@ -18,26 +20,48 @@ const TodoList: React.FC<TodoListPropsType> = (props: TodoListPropsType) => {
     // const TodoList = (props: TodoListPropsType) => { -----------works the same as const with FC above
 
     const [title, setTitle] = useState<string>("");
-    const setTitleHandler = (e: ChangeEvent<HTMLInputElement>) => setTitle(e.currentTarget.value);
+    const [error, setError] = useState<boolean>(false);
+    const setTitleHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        error && setError(false)
+        setTitle(e.currentTarget.value)
+    };
     const addTaskHandler = () => {
-        props.addTask(title)
+        const trimmedTitle = title.trim()
+        if(trimmedTitle) {
+            props.addTask(trimmedTitle)
+        } else {
+            setError(true)
+        }
         setTitle("")
     }
 
     const tasksListItems: Array<JSX.Element> = props.tasks.map((task) => {
+        const removeTask = () => props.removeTask(task.id);
+        const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
+            props.changeTaskStatus(task.id, e.currentTarget.checked)
+        }
+        const taskClasses = task.isDone ? "taskUndone" : "taskDone"
+
         return (
-            <li key={task.id}><input type="checkbox" checked={task.isDone} />
-                <span>{task.title}</span>
-                <button onClick={(e) => props.removeTask(task.id)}>X</button>
+            <li key={task.id}>
+                <input type="checkbox"
+                       checked={task.isDone}
+                       onChange={changeTaskStatus}
+                />
+                <span className={taskClasses}>{task.title}</span>
+                <button onClick={removeTask}>X</button>
             </li>
         )
     });
     const titleMaxLength = 25;
     const isTitleLengthTooLong: boolean = title.length > titleMaxLength;
     const isAddBtnDisabled: boolean = !title.length || isTitleLengthTooLong;
-    const titleMaxLengthWarning = isTitleLengthTooLong ? <div style={{ color: "red" }}>Title is too long</div> : null;
+    const titleMaxLengthWarning = isTitleLengthTooLong ? <div style={{ color: "red" }}>Text is too long</div> : null;
+    const userMessage = error ? <div style={{ color: "red" }}>Text is required!</div> : null;
     const handlerCreator = (filter: FilterValuesType) => () => props.changeFilter(filter)
     const addTaskOnKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && !isAddBtnDisabled && addTaskHandler();
+    const inputClasses = error || isTitleLengthTooLong ? "input-error" : undefined;
+
 
     // const taskTitleInput = useRef<HTMLInputElement>(null);
     // const setTitleHandler = () => {
@@ -57,6 +81,7 @@ const TodoList: React.FC<TodoListPropsType> = (props: TodoListPropsType) => {
                     value={title}
                     onChange={setTitleHandler}
                     onKeyDown={addTaskOnKeyPressHandler}
+                    className={inputClasses}
                     //ref={taskTitleInput}
                 />
                 <button
@@ -65,15 +90,30 @@ const TodoList: React.FC<TodoListPropsType> = (props: TodoListPropsType) => {
                     //onClick={setTitleHandler}
                 >+
                 </button>
-                {titleMaxLengthWarning}
+                {titleMaxLengthWarning || userMessage}
             </div>
             <ul>
                 {tasksListItems}
             </ul>
-            <div>
-                <button onClick={handlerCreator("all")}>All</button>
-                <button onClick={handlerCreator("active")}>Active</button>
-                <button onClick={handlerCreator("completed")}>Completed</button>
+            <div className={"filter-btn-wrapper"}>
+                <button
+                    className={props.filter === "all"
+                        ? "filter-btn-active"
+                        : "filter-btn"}
+                    onClick={handlerCreator("all")}>All
+                </button>
+                <button
+                    className={props.filter === "active"
+                        ? "filter-btn-active"
+                        : "filter-btn"}
+                    onClick={handlerCreator("active")}>Active
+                </button>
+                <button
+                    className={props.filter === "completed"
+                        ? "filter-btn-active"
+                        : "filter-btn"}
+                    onClick={handlerCreator("completed")}>Completed
+                </button>
             </div>
         </div>
     )
