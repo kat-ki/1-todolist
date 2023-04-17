@@ -23,7 +23,7 @@ const TodoList: React.FC<TodoListPropsType> = (props: TodoListPropsType) => {
         props.addTask(title)
         setTitle("")
     }
-    const addTaskOnKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && addTaskHandler();
+
     const tasksListItems: Array<JSX.Element> = props.tasks.map((task) => {
         return (
             <li key={task.id}><input type="checkbox" checked={task.isDone} />
@@ -36,9 +36,8 @@ const TodoList: React.FC<TodoListPropsType> = (props: TodoListPropsType) => {
     const isTitleLengthTooLong: boolean = title.length > titleMaxLength;
     const isAddBtnDisabled: boolean = !title.length || isTitleLengthTooLong;
     const titleMaxLengthWarning = isTitleLengthTooLong ? <div style={{ color: "red" }}>Title is too long</div> : null;
-    const handlerCreator = (filter: FilterValuesType) => {
-        return () => props.changeFilter(filter)
-    }
+    const handlerCreator = (filter: FilterValuesType) => () => props.changeFilter(filter)
+    const addTaskOnKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && !isAddBtnDisabled && addTaskHandler();
 
     // const taskTitleInput = useRef<HTMLInputElement>(null);
     // const setTitleHandler = () => {

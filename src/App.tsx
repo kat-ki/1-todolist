@@ -30,9 +30,9 @@ function App() {
     const getTasksForView = (tasksList: Array<TaskType>, filterValue: FilterValuesType) => {
         switch (filterValue) {
             case "active":
-                return tasks.filter(task => task.isDone === false)
+                return tasks.filter(task => !task.isDone)
             case "completed":
-                return tasks.filter(task => task.isDone === true)
+                return tasks.filter(task => task.isDone)
             default:
                 return tasks
         }
