@@ -1,7 +1,8 @@
 import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
-import { Button } from "@mui/material";
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField'
 
-type PropsType= {
+type PropsType = {
     callBack: (title: string) => void
 }
 export const AddItemForm = (props: PropsType) => {
@@ -27,17 +28,30 @@ export const AddItemForm = (props: PropsType) => {
             addTask();
         }
     }
-const errorMessage = <div className="error-message">Title is required</div>;
+    const errorMessage = <div className="error-message">Title is required</div>;
+    const buttonStyle = {
+        maxWidth: '38px',
+        maxHeight: '38px',
+        minWidth: '38px',
+        minHeight: '38px',
+        backgroundColor: 'steelblue'
+    }
     return (
-            <div>
-                <input value={title}
+        <div>
+            <TextField error={!!error}
+                       value={title}
+                       id='outlined-basic'
+                       label={error ? 'Title is required!' : 'Enter your text'}
+                       variant='outlined'
+                       size='small'
                        onChange={onChangeHandler}
                        onKeyPress={onKeyPressHandler}
-                       className={error ? "error" : ""}
-                />
-                <button onClick={addTask}>+</button>
-                {error && errorMessage}
-            </div>
+            />
+            <Button onClick={addTask}
+                    variant='contained'
+                    style={buttonStyle}
+            >+</Button>
+        </div>
     );
 };
 
