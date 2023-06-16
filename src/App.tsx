@@ -10,13 +10,13 @@ import Paper from '@mui/material/Paper';
 import { ButtonAppBar } from "./ButtonAppBar";
 
 export type FilterValuesType = "all" | "active" | "completed";
-type TodolistType = {
+export type TodolistType = {
     id: string
     title: string
     filter: FilterValuesType
 }
 
-type TasksStateType = {
+export type TasksStateType = {
     [key: string]: Array<TaskType>
 }
 
@@ -41,17 +41,8 @@ function App() {
         ]
     });
 
-    const updateTask = (todolistId: string, taskID: string, updateTitle: string) => {
-        setTasks({
-            ...tasks,
-            [todolistId]: tasks[todolistId].map(el => el.id === taskID ? { ...el, title: updateTitle } : el)
-        })
-    }
 
-    const updateTodolist = (todolistId: string, updateTitle: string) => {
-        setTodolists(todolists.map(el => el.id === todolistId ? { ...el, title: updateTitle } : el))
-    }
-
+// tasks -------------------------------------------------------
     function removeTask(id: string, todolistId: string) {
         //достанем нужный массив по todolistId:
         let todolistTasks = tasks[todolistId];
@@ -83,20 +74,19 @@ function App() {
             setTasks({ ...tasks });
         }
     }
-
-    function changeFilter(value: FilterValuesType, todolistId: string) {
-        let todolist = todolists.find(tl => tl.id === todolistId);
-        if (todolist) {
-            todolist.filter = value;
-            setTodolists([...todolists])
-        }
+    const updateTask = (todolistId: string, taskID: string, updateTitle: string) => {
+        setTasks({
+            ...tasks,
+            [todolistId]: tasks[todolistId].map(el => el.id === taskID ? { ...el, title: updateTitle } : el)
+        })
     }
 
-    function removeTodolist(id: string) {
+// todolists --------------------------------------------------------------
+    function removeTodolist(todolistID: string) {
         // засунем в стейт список тудулистов, id которых не равны тому, который нужно выкинуть
-        setTodolists(todolists.filter(tl => tl.id != id));
+        setTodolists(todolists.filter(tl => tl.id != todolistID));
         // удалим таски для этого тудулиста из второго стейта, где мы храним отдельно таски
-        delete tasks[id]; // удаляем св-во из объекта... значением которого являлся массив тасок
+        delete tasks[todolistID]; // удаляем св-во из объекта... значением которого являлся массив тасок
         // засетаем в стейт копию объекта, чтобы React отреагировал перерисовкой
         setTasks({ ...tasks });
     }
@@ -106,6 +96,17 @@ function App() {
         const newTodo: TodolistType = { id: todolistID, title: newTitle, filter: 'all' };
         setTodolists([newTodo, ...todolists]);
         setTasks({ ...tasks, [todolistID]: [] });
+    }
+    const updateTodolist = (todolistId: string, updateTitle: string) => {
+        setTodolists(todolists.map(el => el.id === todolistId ? { ...el, title: updateTitle } : el))
+    }
+
+    function changeFilter(value: FilterValuesType, todolistId: string) {
+        let todolist = todolists.find(tl => tl.id === todolistId);
+        if (todolist) {
+            todolist.filter = value;
+            setTodolists([...todolists])
+        }
     }
 
     return (
