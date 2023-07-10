@@ -26,7 +26,9 @@ export type TodoActionsType = RemoveTodolistActionType
     | ChangeTodolistTitleActionType
     | ChangeTodolistFilterActionType;
 
-export const todolistsReducer = (state: Array<TodolistType>,
+let initialState: Array<TodolistType> = []
+
+export const todolistsReducer = (state = initialState,
                                  action: TodoActionsType)
                                 : Array<TodolistType> => {
 
@@ -52,7 +54,7 @@ export const todolistsReducer = (state: Array<TodolistType>,
             return [...state];
         }
         default:
-            throw new Error("I don't understand this type")
+            return state;
     }
 }
 
