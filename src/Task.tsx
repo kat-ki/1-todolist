@@ -3,7 +3,7 @@ import { Checkbox } from "@mui/material";
 import { EditableSpan } from "./EditableSpan";
 import IconButton from "@mui/material/IconButton/IconButton";
 import { Delete } from "@mui/icons-material";
-import { TaskType } from "./Todolist";
+import { TaskType } from "./TodoList";
 
 type TaskPropsType = {
     task: TaskType

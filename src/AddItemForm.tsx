@@ -2,9 +2,6 @@
 import {IconButton, TextField} from "@mui/material";
 import {AddBox} from "@mui/icons-material";
 
-
-
-
 type AddItemFormPropsType = {
     addItem: (title: string) => void
 }
