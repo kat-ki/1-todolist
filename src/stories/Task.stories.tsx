@@ -11,10 +11,21 @@ const meta: Meta<typeof Task> = {
     tags: ['autodocs'],
     // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
     args: {
-        changeTaskStatus: action('changeTaskStatus'),
-        changeTaskTitle: action('changeTaskTitle'),
-        removeTask: action('removeTask'),
         task: {id: 'id', isDone: true, title: 'task'}
+    },
+    argTypes: {
+        changeTaskStatus: {
+            description: 'change Task Status',
+            action: 'status'
+        },
+        changeTaskTitle: {
+            description: 'change Task Title',
+            action: 'change'
+        },
+        removeTask: {
+            description: 'remove task',
+            action: 'delete'
+        }
     }
 };
 
